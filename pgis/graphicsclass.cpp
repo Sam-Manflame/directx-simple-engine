@@ -121,6 +121,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the light object.
+	m_Light->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
 	m_Light->SetDiffuseColor(1.0f, 0.0f, 1.0f, 1.0f);
 	m_Light->SetDirection(-1.0f, 0.0f, 1.0f);
 
@@ -233,24 +234,9 @@ bool GraphicsClass::Render(float rotation)
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	m_Model->Render(m_D3D->GetDeviceContext());
 
-	// Render the model using the color shader.
-	/*result = m_ColorShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
-	if (!result)
-	{
-		return false;
-	}*/
-
-	// Render the model using the texture shader.
-	/*result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-		m_Model->GetTexture());
-	if (!result)
-	{
-		return false;
-	}*/
-
 	// Render the model using the light shader.
 	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-					   m_Model->GetTexture(), m_Light->GetDirection(), m_Light->GetDiffuseColor());
+					   m_Model->GetTexture(), m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor());
 	if(!result)
 	{
 		return false;
