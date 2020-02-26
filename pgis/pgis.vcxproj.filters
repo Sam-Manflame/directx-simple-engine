@@ -54,6 +54,15 @@
     <ClInclude Include="bitmapclass.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="fontclass.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="fontshaderclass.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="textclass.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pgis.cpp">
@@ -95,6 +104,15 @@
     <ClCompile Include="bitmapclass.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="fontclass.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="fontshaderclass.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="textclass.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="color.vs">
@@ -113,6 +131,12 @@
       <Filter>Файлы ресурсов</Filter>
     </None>
     <None Include="light.ps">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
+    <None Include="font.ps">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
+    <None Include="font.vs">
       <Filter>Файлы ресурсов</Filter>
     </None>
   </ItemGroup>
