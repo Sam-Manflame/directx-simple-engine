@@ -18,7 +18,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 class ModelClass
 {
-private:
+public:
 	struct VertexType
 	{
 		D3DXVECTOR3 position;
@@ -38,17 +38,19 @@ public:
 	ModelClass(const ModelClass&);
 	~ModelClass();
 
-	bool Initialize(ID3D11Device*, const char*, WCHAR*);
+	bool Initialize(ID3D11Device*, WCHAR*);
 	void Shutdown();
+	void Frame(ID3D11Device*);
 	void Render(ID3D11DeviceContext*);
 
 	int GetIndexCount();
 	ID3D11ShaderResourceView* GetTexture();
 
-	bool LoadModel(const char*);
 	void ReleaseModel();
 
-private:
+	void GetWorldMatrix(D3DXMATRIX&);
+
+protected:
 	bool InitializeBuffers(ID3D11Device*);
 	void ShutdownBuffers();
 	void RenderBuffers(ID3D11DeviceContext*);
@@ -60,4 +62,8 @@ private:
 	int m_vertexCount, m_indexCount;
 	TextureClass* m_Texture;
 	ModelType* m_model;
+
+	D3DXMATRIX worldMatrix;
+
+	D3DXVECTOR3 rotation;
 };

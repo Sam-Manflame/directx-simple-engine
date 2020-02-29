@@ -17,6 +17,8 @@
 #include "lightclass.h"
 #include "bitmapclass.h"
 #include "textclass.h"
+#include "loadable_model.h"
+#include "fractal_tetrahedron.h"
 
 
 /////////////
@@ -41,19 +43,20 @@ public:
 	bool Initialize(int, int, HWND);
 	void Shutdown();
 
-	bool Frame(int, int);
+	bool Frame();
 	bool Render();
 
 private:
 	D3DClass* m_D3D;
 	CameraClass* m_Camera;
-	ModelClass* m_Model;
+	LoadableModel* m_Model;
 	ColorShaderClass* m_ColorShader;
 	TextureShaderClass* m_TextureShader;
 	LightShaderClass* m_LightShader;
 	LightClass* m_Light;
 	BitmapClass* m_Bitmap;
 	TextClass* m_Text;
+	FractalTetrahedron* fractal1;
 };
 
 #endif

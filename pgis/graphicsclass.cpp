@@ -15,6 +15,7 @@ GraphicsClass::GraphicsClass()
 	m_Light = 0;
 	m_Bitmap = 0;
 	m_Text = 0;
+	fractal1 = 0;
 }
 
 
@@ -77,7 +78,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
 
 	// Create the model object.
-	m_Model = new ModelClass;
+	m_Model = new LoadableModel;
 	if (!m_Model)
 	{
 		return false;
@@ -88,6 +89,18 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	fractal1 = new FractalTetrahedron(150);
+	if (!fractal1)
+	{
+		return false;
+	}
+	fractal1->Initialize(m_D3D->GetDevice(), (WCHAR*)L"square.dds");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the fractal1 object.", L"Error", MB_OK);
 		return false;
 	}
 
@@ -242,20 +255,15 @@ void GraphicsClass::Shutdown()
 }
 
 
-bool GraphicsClass::Frame(int mouseX, int mouseY)
+bool GraphicsClass::Frame()
 {
 	bool result;
 
-
-	// Set the location of the mouse.
-	result = m_Text->SetMousePosition(mouseX, mouseY, m_D3D->GetDeviceContext());
-	if (!result)
-	{
-		return false;
-	}
-
 	// Set the position of the camera.
 	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
+
+	m_Model->Frame(m_D3D->GetDevice());
+	fractal1->Frame(m_D3D->GetDevice());
 
 	return true;
 }
@@ -275,7 +283,8 @@ bool GraphicsClass::Render()
 
 	// Get the world, view, and projection matrices from the camera and d3d objects.
 	m_Camera->GetViewMatrix(viewMatrix);
-	m_D3D->GetWorldMatrix(worldMatrix);
+	//m_Model->GetWorldMatrix(worldMatrix);
+	fractal1->GetWorldMatrix(worldMatrix);
 	m_D3D->GetProjectionMatrix(projectionMatrix);
 	m_D3D->GetOrthoMatrix(orthoMatrix);
 
@@ -283,16 +292,22 @@ bool GraphicsClass::Render()
 	//D3DXMatrixRotationY(&worldMatrix, rotation);
 
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	m_Model->Render(m_D3D->GetDeviceContext());
+	//m_Model->Render(m_D3D->GetDeviceContext());
+
+	fractal1->Render(m_D3D->GetDeviceContext());
 
 	// Render the model using the light shader.
-	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-					   m_Model->GetTexture(), m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor());
+	/*result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+					   m_Model->GetTexture(), m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor());*/
+	result = m_LightShader->Render(m_D3D->GetDeviceContext(), fractal1->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+		fractal1->GetTexture(), m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor());
 	if(!result)
 	{
 		return false;
 	}
 
+
+	D3DXMatrixIdentity(&worldMatrix);
 
 	// Turn off the Z buffer to begin all 2D rendering.
 	m_D3D->TurnZBufferOff();
@@ -305,14 +320,14 @@ bool GraphicsClass::Render()
 		return false;
 	}
 	// Render the bitmap with the texture shader.
-	result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_Bitmap->GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix, m_Bitmap->GetTexture());
+	//result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_Bitmap->GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix, m_Bitmap->GetTexture());
 	if (!result)
 	{
 		return false;
 	}
 
 	// Render the text strings.
-	result = m_Text->Render(m_D3D->GetDeviceContext(), worldMatrix, orthoMatrix);
+	//result = m_Text->Render(m_D3D->GetDeviceContext(), worldMatrix, orthoMatrix);
 	if (!result)
 	{
 		return false;

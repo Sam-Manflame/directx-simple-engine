@@ -9,8 +9,7 @@ TextClass::TextClass()
 	m_Font = 0;
 	m_FontShader = 0;
 
-	m_sentence1 = 0;
-	m_sentence2 = 0;
+	m_sentence = 0;
 }
 
 
@@ -68,28 +67,14 @@ bool TextClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCont
 	}
 
 	// Initialize the first sentence.
-	result = InitializeSentence(&m_sentence1, 16, device);
+	result = InitializeSentence(&m_sentence, 16, device);
 	if(!result)
 	{
 		return false;
 	}
 
 	// Now update the sentence vertex buffer with the new string information.
-	result = UpdateSentence(m_sentence1, "Hello", 100, 100, 1.0f, 1.0f, 1.0f, deviceContext);
-	if(!result)
-	{
-		return false;
-	}
-
-	// Initialize the first sentence.
-	result = InitializeSentence(&m_sentence2, 16, device);
-	if(!result)
-	{
-		return false;
-	}
-
-	// Now update the sentence vertex buffer with the new string information.
-	result = UpdateSentence(m_sentence2, "Goodbye", 100, 200, 1.0f, 1.0f, 0.0f, deviceContext);
+	result = UpdateSentence(m_sentence, "Hello", 100, 100, 1.0f, 1.0f, 1.0f, deviceContext);
 	if(!result)
 	{
 		return false;
@@ -102,10 +87,7 @@ bool TextClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCont
 void TextClass::Shutdown()
 {
 	// Release the first sentence.
-	ReleaseSentence(&m_sentence1);
-
-	// Release the second sentence.
-	ReleaseSentence(&m_sentence2);
+	ReleaseSentence(&m_sentence);
 
 	// Release the font shader object.
 	if(m_FontShader)
@@ -133,14 +115,7 @@ bool TextClass::Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatri
 
 
 	// Draw the first sentence.
-	result = RenderSentence(deviceContext, m_sentence1, worldMatrix, orthoMatrix);
-	if(!result)
-	{
-		return false;
-	}
-
-	// Draw the second sentence.
-	result = RenderSentence(deviceContext, m_sentence2, worldMatrix, orthoMatrix);
+	result = RenderSentence(deviceContext, m_sentence, worldMatrix, orthoMatrix);
 	if(!result)
 	{
 		return false;
@@ -163,8 +138,8 @@ bool TextClass::InitializeSentence(SentenceType** sentence, int maxLength, ID3D1
 	// Create a new sentence object.
 	*sentence = new SentenceType;
 	if(!*sentence)
-	{
-		return false;
+		return false;	{
+
 	}
 
 	// Initialize the sentence buffers to null.
@@ -378,44 +353,6 @@ bool TextClass::RenderSentence(ID3D11DeviceContext* deviceContext, SentenceType*
 	if(!result)
 	{
 		false;
-	}
-
-	return true;
-}
-
-bool TextClass::SetMousePosition(int mouseX, int mouseY, ID3D11DeviceContext* deviceContext)
-{
-	char tempString[16];
-	char mouseString[16];
-	bool result;
-
-
-	// Convert the mouseX integer to string format.
-	_itoa_s(mouseX, tempString, 10);
-
-	// Setup the mouseX string.
-	strcpy_s(mouseString, "Mouse X: ");
-	strcat_s(mouseString, tempString);
-
-	// Update the sentence vertex buffer with the new string information.
-	result = UpdateSentence(m_sentence1, mouseString, 20, 20, 1.0f, 1.0f, 1.0f, deviceContext);
-	if (!result)
-	{
-		return false;
-	}
-
-	// Convert the mouseY integer to string format.
-	_itoa_s(mouseY, tempString, 10);
-
-	// Setup the mouseY string.
-	strcpy_s(mouseString, "Mouse Y: ");
-	strcat_s(mouseString, tempString);
-
-	// Update the sentence vertex buffer with the new string information.
-	result = UpdateSentence(m_sentence2, mouseString, 20, 40, 1.0f, 1.0f, 1.0f, deviceContext);
-	if (!result)
-	{
-		return false;
 	}
 
 	return true;
